@@ -9,6 +9,13 @@ namespace Assets.Code.Controller
     {
         public List<Player> Players { get; set; }
 
+        private IGameController _gameController;
+
+        public PlayerController(IGameController gameController)
+        {
+            _gameController = gameController;
+        }
+
         public void InitPlayers(List<Player> players)
         {
             Players = players;
