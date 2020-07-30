@@ -32,11 +32,13 @@ namespace Assets.Code.Controller
 
         private void InitSettingsModel(GameModel gameModel)
         {
-            SettingsModel = new SettingsModel();
-            SettingsModel.PlayersCount = gameModel.playersCount;
-            SettingsModel.BuffCountMin = gameModel.buffCountMin;
-            SettingsModel.BuffCountMax = gameModel.buffCountMax;
-            SettingsModel.AllowDuplicateBuffs = gameModel.allowDuplicateBuffs;
+            SettingsModel = new SettingsModel
+            {
+                PlayersCount = gameModel.playersCount,
+                BuffCountMin = gameModel.buffCountMin,
+                BuffCountMax = gameModel.buffCountMax,
+                AllowDuplicateBuffs = gameModel.allowDuplicateBuffs
+            };
         }
     }
 }

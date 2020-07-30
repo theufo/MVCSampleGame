@@ -8,28 +8,12 @@ namespace Assets.Code.Controller
     public class PlayerController : IPlayerController
     {
         public List<Player> Players { get; set; }
-        private IGameController _gameController;
-        
-        public PlayerController(IGameController gameController)
-        {
-            _gameController = gameController;
-        }
 
         public void InitPlayers(List<Player> players)
         {
             Players = players;
             foreach (var player in Players)
             {
-                var statModels = StatsCreator.CreateDefaultStats(_gameController.Stats);
-                if (_gameController.SettingsModel.WithBuffs)
-                {
-                    var buffModels = StatsCreator.CreateBuffs(statModels, _gameController.Buffs);
-                    player.PlayerView.InitStats(statModels, buffModels);
-                }
-                else
-                    player.PlayerView.InitStats(statModels);
-
-                player.PlayerModel.InitModelStats(statModels);
                 player.PlayerModel.OnHealthChange += PlayerModel_OnHealthChange;
             }
         }

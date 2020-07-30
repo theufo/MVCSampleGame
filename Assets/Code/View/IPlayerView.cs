@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Assets.Code.Model;
+﻿using Assets.Code.Model;
 
 namespace Assets.Code.View
 {
@@ -7,7 +6,8 @@ namespace Assets.Code.View
     {
         int Id { get; set; }
         float Health { get; set; }
-        void InitStats(List<StatModel> statModels, List<BuffModel> buffModels = null);
         void Die();
+        void AddStat(IBaseStat baseStat);
+        void ClearStats();
     }
 }

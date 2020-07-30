@@ -6,7 +6,6 @@ namespace Assets.Code.Model
     public class StatModel : BaseStat
     {
         public StatType StatType;
-        public float Value;
 
         public StatModel(Stat stat)
         {
@@ -16,5 +15,20 @@ namespace Assets.Code.Model
             Icon = stat.icon;
             Title = stat.title;
         }
+
+        private float _value;
+        public float Value
+        {
+            get => _value;
+            set
+            {
+                if (_value == value)
+                    return;
+                _value = value;
+                OnValueChange?.Invoke(_value);
+            }
+        }
+        public delegate void OnValueChangeDelegate(float newVal);
+        public event OnValueChangeDelegate OnValueChange;
     }
 }

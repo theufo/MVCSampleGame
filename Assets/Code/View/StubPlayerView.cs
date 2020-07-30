@@ -15,5 +15,13 @@ namespace Assets.Code.View
         public void Die()
         {
         }
+
+        public void AddStat(IBaseStat baseStat)
+        {
+        }
+
+        public void ClearStats()
+        {
+        }
     }
 }

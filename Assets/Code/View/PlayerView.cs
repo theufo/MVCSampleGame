@@ -11,132 +11,117 @@ namespace Assets.Code.View
 {
     public class PlayerView : MonoBehaviour, IPlayerView
     {
-        private GameObject statPrefab;
+        private GameObject _statPrefab;
         public int Id { get; set; }
         public PlayerPanelHierarchy PlayerPanelHierarchy;
 
         private IPlayerController _playerController;
+        private IStatController _statController;
         private List<StatEntity> stats;
 
-        private bool isDead;
+        private bool _isDead;
         private float _health;
         public float Health
         {
-            get => _health;
+            get => stats.FirstOrDefault(x => x.StatType == StatType.Health).Value;
             set
             {
-                if (isDead)
+                if (_isDead)
                     return;
-
                 _health = value;
-                UpdateStat(StatType.Health, _health);
+                _statController.UpdateStat(Id, StatType.Health, _health);
             }
         }
 
         private float _attack;
         public float Attack
         {
-            get => GetStat(StatType.Attack);
-            set => _attack = value;
+            get => _statController.GetStat(Id, StatType.Attack);
+            set => _statController.UpdateStat(Id, StatType.Attack, value);
         }
 
         private float _defence;
         public float Defence
         {
-            get => GetStat(StatType.Defence);
+            get => _statController.GetStat(Id, StatType.Defence);
             set => _defence = value;
         }
 
         private float _vampire;
         public float Vampire
         {
-            get => GetStat(StatType.Vampire);
+            get => _statController.GetStat(Id, StatType.Vampire);
             set => _vampire = value;
         }
 
         [Inject]
-        public void Construct(IPlayerController playerController)
+        public void Construct(IPlayerController playerController, IStatController statController)
         {
             _playerController = playerController;
+            _statController = statController;
         }
 
         public void Awake()
         {
             PlayerPanelHierarchy.attackButton.onClick.AddListener(OnAttackButtonClicked);
+            _statPrefab = Resources.Load<GameObject>("Prefabs/Stat");
+            stats = new List<StatEntity>();
         }
 
-        public void InitStats(List<StatModel> statModels, List<BuffModel> buffModels = null)
+        public void Die()
         {
-            isDead = false;
-            PlayerPanelHierarchy.character.SetInteger("Health", 100);
+            _isDead = true;
 
-            if(stats == null)
+            PlayerPanelHierarchy.character.SetInteger("Health", 0);
+        }
+
+        public void AddStat(IBaseStat baseStat)
+        {
+            var stat = Instantiate(_statPrefab, PlayerPanelHierarchy.statsPanel.transform).GetComponent<StatEntity>();
+            var image = StatImageLoader.LoadStatImage(baseStat);
+            stat.Init(baseStat, image);
+            stats.Add(stat);
+
+            if (baseStat is StatModel statModel)
+            {
+                switch (statModel.StatType)
+                {
+                    case StatType.Health:
+
+                        Health = stat.Value;
+                        break;
+                    case StatType.Defence:
+                        Defence = stat.Value;
+                        break;
+                    case StatType.Attack:
+                        Attack = stat.Value;
+                        break;
+                    case StatType.Vampire:
+                        Vampire = stat.Value;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+        }
+
+        public void ClearStats()
+        {
+            if (stats == null)
                 stats = new List<StatEntity>();
 
             foreach (var stat in stats)
                 Destroy(stat.gameObject);
 
             stats.Clear();
-            statPrefab = Resources.Load<GameObject>("Prefabs/Stat");
-            foreach (var statModel in statModels)
-            {
-                var stat = Instantiate(statPrefab, PlayerPanelHierarchy.statsPanel.transform).GetComponent<StatEntity>();
-                var image = StatImageLoader.LoadStatImage(statModel);
-                stat.Init(statModel, image);
-                stats.Add(stat);
 
-                switch (stat.StatModel.StatType)
-                {
-                    case StatType.Health: Health = stat.Value;
-                        break;
-                    case StatType.Defence: Defence = stat.Value;
-                        break;
-                    case StatType.Attack: Attack = stat.Value;
-                        break;
-                    case StatType.Vampire: Vampire = stat.Value;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-            }
-
-            if(buffModels != null)
-                foreach (var buffModel in buffModels)
-                {
-                    var buff = Instantiate(statPrefab, PlayerPanelHierarchy.statsPanel.transform).GetComponent<StatEntity>();
-                    var image = StatImageLoader.LoadStatImage(buffModel);
-                    buff.Image.sprite = image;
-                    buff.Text.text = buffModel.Title;
-                    stats.Add(buff);
-                }
-        }
-
-        public void UpdateStat(StatType statType, float value)
-        {
-            var stat = stats.FirstOrDefault(x => x.StatModel.StatType == statType);
-            if (stat != null)
-                stat.UpdateValue(value);
-        }
-
-        public float GetStat(StatType statType)
-        {
-            var stat = stats.FirstOrDefault(x => x.StatModel.StatType == statType);
-            if (stat != null)
-                return stat.Value;
-
-            return 0;
-        }
-
-        public void Die()
-        {
-            isDead = true;
-
-            PlayerPanelHierarchy.character.SetInteger("Health", 0);
+            _isDead = false;
+            PlayerPanelHierarchy.character.SetInteger("Health", 100);
         }
 
         private void OnAttackButtonClicked()
         {
-            if (isDead)
+            if (_isDead)
                 return;
 
             _playerController.OnAttack(Id, Attack);

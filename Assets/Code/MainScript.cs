@@ -14,6 +14,7 @@ namespace Assets.Code
     {
         private IGameController _gameController;
         private IPlayerController _playerController;
+        private IStatController _statController;
         public Button StartWithBuffsButton;
         public Button StartWithoutBuffsButton;
 
@@ -25,10 +26,11 @@ namespace Assets.Code
         }
 
         [Inject]
-        public void Construct(IGameController gameController, IPlayerController playerController)
+        public void Construct(IGameController gameController, IPlayerController playerController, IStatController statController)
         {
             _gameController = gameController;
             _playerController = playerController;
+            _statController = statController;
         }
 
         private void StartWithoutBuffs()
@@ -45,6 +47,7 @@ namespace Assets.Code
 
         public void StartGame(List<IPlayerView> playerViews)
         {
+            _statController.EndGame();
             _playerController.EndGame();
             _gameController.EndGame();
 
@@ -56,6 +59,7 @@ namespace Assets.Code
             }
             _playerController.InitPlayers(list);
             _gameController.InitPlayers(list);
+            _statController.InitPlayers(list, _gameController.Stats);
         }
 
         private List<IPlayerView> GetPlayerViewsFromScene()

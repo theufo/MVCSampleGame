@@ -21,7 +21,8 @@ namespace Tests
             var mainScript = new MainScript();
             var stubGameController = new StubGameController();
             var stubPlayerController = new StubPlayerController();
-            mainScript.Construct(stubGameController, stubPlayerController);
+            var stubStatController = new StubStatController();
+            mainScript.Construct(stubGameController, stubPlayerController, stubStatController);
             mainScript.StartGame(new List<IPlayerView>(){playerPrefab.GetComponent<StubPlayerView>()});
 
             Assert.IsTrue(stubGameController.Players.Count > 0 && stubPlayerController.Players.Count > 0);

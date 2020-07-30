@@ -8,18 +8,29 @@ namespace Assets.Code.Helper
     {
         public Image Image;
         public Text Text;
-        public StatModel StatModel;
+        public IBaseStat StatModel;
         public StatType StatType;
         public float Value;
 
-        public void Init(StatModel statModel, Sprite sprite)
+        public void Init(IBaseStat baseStat, Sprite sprite)
         {
-            StatModel = statModel;
-            Value = statModel.Value;
-            StatType = statModel.StatType;
+            StatModel = baseStat;
 
-            Text.text = $"{StatModel.Title} {Value}";
+            Text.text = $"{StatModel.Title}";
             Image.sprite = sprite;
+
+            if (baseStat is StatModel statModel)
+            {
+                UpdateValue(statModel.Value);
+                StatType = statModel.StatType;
+
+                statModel.OnValueChange += StatModel_OnValueChange;
+            }
+        }
+
+        private void StatModel_OnValueChange(float newVal)
+        {
+            UpdateValue(newVal);
         }
 
         public void UpdateValue(float value)

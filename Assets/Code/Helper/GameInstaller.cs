@@ -9,6 +9,7 @@ namespace Assets.Code.Helper
         {
             Container.Bind<IGameController>().To<GameController>().AsSingle();
             Container.Bind<IPlayerController>().To<PlayerController>().AsSingle();
+            Container.Bind<IStatController>().To<StatController>().AsSingle();
         }
     }
 }
