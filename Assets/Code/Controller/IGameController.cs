@@ -12,7 +12,6 @@ namespace Assets.Code.Controller
         Stat[] Stats { get; set; }
         Buff[] Buffs { get; set; }
 
-
         void EndGame();
         void InitPlayers(List<Player> players);
     }

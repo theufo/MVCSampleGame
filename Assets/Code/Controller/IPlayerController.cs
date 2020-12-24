@@ -9,6 +9,13 @@ namespace Assets.Code.Controller
 
         void EndGame();
         void InitPlayers(List<Player> players);
+        bool CanAttack(int playerId);
+
         void OnAttack(int playerId, float damage);
+        void SetHealth(int playerId, float value);
+        void SetAttack(int playerId, float value);
+        void SetDefense(int playerId, float value);
+        void SetVampire(int playerId, float value);
+        void SetMaxHealth(int playerId, float value);
     }
 }

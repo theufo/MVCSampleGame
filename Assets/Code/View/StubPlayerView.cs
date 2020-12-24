@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Assets.Code.Helper;
 using Assets.Code.Model;
 using UnityEngine;
 
@@ -8,6 +9,8 @@ namespace Assets.Code.View
     {
         public int Id { get; set; }
         public float Health { get; set; }
+        public HealthBar HealthBar { get; set; }
+
         public void InitStats(List<StatModel> statModels, List<BuffModel> buffModels = null)
         {
         }

@@ -1,4 +1,5 @@
-﻿using Assets.Code.Data;
+﻿using System;
+using Assets.Code.Data;
 using Assets.Code.Helper;
 
 namespace Assets.Code.Model
@@ -28,7 +29,6 @@ namespace Assets.Code.Model
                 OnValueChange?.Invoke(_value);
             }
         }
-        public delegate void OnValueChangeDelegate(float newVal);
-        public event OnValueChangeDelegate OnValueChange;
+        public Action<float> OnValueChange;
     }
 }

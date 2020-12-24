@@ -1,18 +1,18 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Assets.Code.Helper
+namespace Assets.Code.Data
 {
     public class DataLoader
     {
-        public static Data.Data LoadJson()
+        public static Code.Data.Data LoadJson()
         {
             var data = Resources.Load<TextAsset>("data");
             if (data == null)
             {
                 throw new NullReferenceException("no data", null);
             }
-            return JsonUtility.FromJson<Data.Data>(data.text);
+            return JsonUtility.FromJson<Code.Data.Data>(data.text);
         }
     }
 }

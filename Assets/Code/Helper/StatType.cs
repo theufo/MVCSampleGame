@@ -3,7 +3,7 @@
     public enum StatType
     {
         Health,
-        Defence,
+        Defense,
         Attack, 
         Vampire,
     }

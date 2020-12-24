@@ -25,7 +25,7 @@ namespace Assets.Code.Controller
             _players = players;
             _statModels = new List<StatModel>();
             _buffModels = new List<BuffModel>();
-            foreach (var player in players)
+            foreach (var player in _players)
             {
                 var statModels = StatsCreator.CreateDefaultStats(_gameController.Stats);
                 if (_gameController.SettingsModel.WithBuffs)
@@ -36,7 +36,7 @@ namespace Assets.Code.Controller
                 else
                     InitStats(player, statModels);
 
-                InitModelStats(player.PlayerModel, statModels);
+                player.PlayerModel.CanAttack = true;
             }
 
         }
@@ -57,30 +57,6 @@ namespace Assets.Code.Controller
                     buffModel.PlayerId = player.PlayerModel.Id;
                     _buffModels.Add(buffModel);
                 }
-        }
-
-        public static void InitModelStats(PlayerModel playerModel, IEnumerable<StatModel> statModels)
-        {
-            foreach (var stat in statModels)
-            {
-                switch (stat.StatType)
-                {
-                    case StatType.Health:
-                        playerModel.Health = stat.Value;
-                        break;
-                    case StatType.Defence:
-                        playerModel.Defence = stat.Value;
-                        break;
-                    case StatType.Attack:
-                        playerModel.Attack = stat.Value;
-                        break;
-                    case StatType.Vampire:
-                        playerModel.Vampire = stat.Value;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-            }
         }
 
         public void EndGame()

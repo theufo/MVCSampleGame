@@ -1,8 +1,11 @@
-﻿namespace Assets.Code.Model
+﻿using System;
+
+namespace Assets.Code.Model
 {
     public class PlayerModel
     {
         public int Id { get; set; }
+
 
         private float _health;
         public float Health
@@ -10,14 +13,27 @@
             get => _health;
             set
             {
-                if (_health == value) 
+                if (_health == value)
                     return;
                 _health = value;
-                OnHealthChange?.Invoke(Id,_health);
+                OnHealthChange?.Invoke(Id, _health);
             }
         }
-        public delegate void OnHealthChangeDelegate(int playerId, float newVal);
-        public event OnHealthChangeDelegate OnHealthChange;
+        public Action<int, float> OnHealthChange;
+
+        private float _maxHealth;
+        public float MaxHealth
+        {
+            get => _maxHealth;
+            set
+            {
+                if (_maxHealth == value)
+                    return;
+                _maxHealth = value;
+                OnMaxHealthChange?.Invoke(Id, _maxHealth);
+            }
+        }
+        public Action<int, float> OnMaxHealthChange;
 
         private float _attack;
         public float Attack
@@ -25,29 +41,27 @@
             get => _attack;
             set
             {
-                if (_attack == value) 
+                if (_attack == value)
                     return;
                 _attack = value;
                 OnAttackChange?.Invoke(Id, _attack);
             }
         }
-        public delegate void OnAttackChangeDelegate(int playerId, float newVal);
-        public event OnAttackChangeDelegate OnAttackChange;
+        public Action<int, float> OnAttackChange;
 
-        private float _defence;
-        public float Defence
+        private float _defense;
+        public float Defense
         {
-            get => _defence;
+            get => _defense;
             set
             {
-                if (_defence == value) 
+                if (_defense == value)
                     return;
-                _defence = value;
-                OnDefenceChange?.Invoke(Id, _defence);
+                _defense = value;
+                OnDefenseChange?.Invoke(Id, _defense);
             }
         }
-        public delegate void OnDefenceChangeDelegate(int playerId, float newVal);
-        public event OnDefenceChangeDelegate OnDefenceChange;
+        public Action<int, float> OnDefenseChange;
 
         private float _vampire;
         public float Vampire
@@ -55,13 +69,14 @@
             get => _vampire;
             set
             {
-                if (_vampire == value) 
+                if (_vampire == value)
                     return;
                 _vampire = value;
                 OnVampireChange?.Invoke(Id, _vampire);
             }
         }
-        public delegate void OnVampireChangeDelegate(int playerId, float newVal);
-        public event OnVampireChangeDelegate OnVampireChange;
+        public Action<int, float> OnVampireChange;
+
+        public bool CanAttack { get; set; }
     }
 }

@@ -12,8 +12,18 @@ namespace Assets.Code.View
     public class PlayerView : MonoBehaviour, IPlayerView
     {
         private GameObject _statPrefab;
+
         public int Id { get; set; }
         public PlayerPanelHierarchy PlayerPanelHierarchy;
+
+        [SerializeField]
+        private HealthBar _healthBar;
+
+        public HealthBar HealthBar
+        {
+            get => _healthBar;
+            set => _healthBar = value;
+        }
 
         private IPlayerController _playerController;
         private IStatController _statController;
@@ -40,11 +50,11 @@ namespace Assets.Code.View
             set => _statController.UpdateStat(Id, StatType.Attack, value);
         }
 
-        private float _defence;
-        public float Defence
+        private float _defense;
+        public float Defense
         {
-            get => _statController.GetStat(Id, StatType.Defence);
-            set => _defence = value;
+            get => _statController.GetStat(Id, StatType.Defense);
+            set => _defense = value;
         }
 
         private float _vampire;
@@ -87,17 +97,21 @@ namespace Assets.Code.View
                 switch (statModel.StatType)
                 {
                     case StatType.Health:
-
                         Health = stat.Value;
+                        _playerController.SetMaxHealth(Id, stat.Value);
+                        _playerController.SetHealth(Id, stat.Value);
                         break;
-                    case StatType.Defence:
-                        Defence = stat.Value;
+                    case StatType.Defense:
+                        Defense = stat.Value;
+                        _playerController.SetDefense(Id, stat.Value);
                         break;
                     case StatType.Attack:
                         Attack = stat.Value;
+                        _playerController.SetAttack(Id, stat.Value);
                         break;
                     case StatType.Vampire:
                         Vampire = stat.Value;
+                        _playerController.SetVampire(Id, stat.Value);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -124,8 +138,11 @@ namespace Assets.Code.View
             if (_isDead)
                 return;
 
-            _playerController.OnAttack(Id, Attack);
-            PlayerPanelHierarchy.character.SetTrigger("Attack");
+            if (_playerController.CanAttack(Id))
+            {
+                _playerController.OnAttack(Id, Attack);
+                PlayerPanelHierarchy.character.SetTrigger("Attack");
+            }
         }
     }
 }
